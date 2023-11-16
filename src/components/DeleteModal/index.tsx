@@ -11,15 +11,14 @@ interface DeleteModalProps {
 }
 const DeleteModal = ({setOpened, itemToDelete, deleteHandler, setChosenItem}: DeleteModalProps) => {
 
+    // close modal & delete item
     const deleteButtonHandler = () => {
         if (itemToDelete !== null) {
             deleteHandler(itemToDelete)
             setOpened(false)
             setChosenItem(null)
-
         }
     }
-
 
   return (
     <Modal>

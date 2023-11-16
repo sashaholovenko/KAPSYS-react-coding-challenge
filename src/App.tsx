@@ -22,6 +22,7 @@ const App = () => {
     const [showDeleteModal, setDeleteModal] = useState<boolean>(false)
     const [ taskChosen, setChosen ] = useState<number | null>(null)
 
+    // fetching data from server
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -36,21 +37,22 @@ const App = () => {
         fetchData()
     }, [])
 
-
+    // delete task and setting new list of tasks
     const deleteHandler = (id: number) => {
-        const newTasks: Task[] = taskList.filter( (task: Task) => task.id !== id)
-        setTasks(newTasks)
+        const newTaskList: Task[] = taskList.filter( (task: Task) => task.id !== id)
+        setTasks(newTaskList)
     }
 
+    // changing progress values in tasks
     const onProgressHandler = (id: number) => {
-        const newTasks: Task[] = taskList.map( (task: Task) => {
+        const newTaskList: Task[] = taskList.map( (task: Task) => {
             if ( task.id === id ) {
                 return {...task, progress: task.progress === 100 ? 0 : task.progress + 50}
             } else {
                 return task
             }
         })
-        setTasks(newTasks)
+        setTasks(newTaskList)
     }
 
     return (
@@ -68,7 +70,7 @@ const App = () => {
                                   isOpenedDelete={showDeleteModal}
                                   setOpenedDeleteModal={setDeleteModal}
                                   deleteHandler={deleteHandler}
-                                  setItemDelete={setChosen}
+                                  setChosenTask={setChosen}
                                   setAddEditModal={setAddEditModal}
                                   onProgressHandler={onProgressHandler}
                         />

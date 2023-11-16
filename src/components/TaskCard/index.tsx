@@ -11,7 +11,7 @@ interface TaskCard {
     setOpenedDeleteModal: Dispatch<SetStateAction<boolean>>
     isOpenedDelete: boolean
     deleteHandler: () => void
-    setItemDelete: Dispatch<SetStateAction<number>>
+    setChosenTask: Dispatch<SetStateAction<number>>
     setAddEditModal: Dispatch<SetStateAction<boolean>>
     onProgressHandler: (id: number) => void
 }
@@ -22,17 +22,19 @@ const progressList: { [key: number]: string } = {
     100: "Done",
 };
 
-const TaskCard = ({ task, setOpenedDeleteModal , setItemDelete, setAddEditModal, onProgressHandler }: any) => {
+const TaskCard = ({ task, setOpenedDeleteModal , setChosenTask, setAddEditModal, onProgressHandler }: any) => {
   const { id, title, priority, status, progress }: Task = task
 
+    // show modal & set task id to delete
     const onDeleteHandler = () => {
         setOpenedDeleteModal(true)
-        setItemDelete(id)
+        setChosenTask(id)
     }
 
+    // show modal & set task id to edit
     const onEditHandler = () => {
         setAddEditModal(true)
-        setItemDelete(id)
+        setChosenTask(id)
     }
 
   return (

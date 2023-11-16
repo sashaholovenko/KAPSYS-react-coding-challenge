@@ -17,9 +17,10 @@ interface AddEditTaskFormProps {
 }
 
 const AddEditTaskForm = ({setOpened, taskList, setTasks, taskChosen, setChosenItem}: AddEditTaskFormProps) => {
-  const [ taskTitle, setTaskTitle ] = useState('')
-  const [ taskPriority, setTaskPriority ] = useState('')
+  const [ taskTitle, setTaskTitle ] = useState<string>('')
+  const [ taskPriority, setTaskPriority ] = useState<string>('')
 
+    // setting values in form when editing task
     useEffect(() => {
         if (taskChosen !== null) {
             const chosenTask = taskList.find(elem => elem.id === taskChosen);
@@ -30,6 +31,7 @@ const AddEditTaskForm = ({setOpened, taskList, setTasks, taskChosen, setChosenIt
         }
     }, [taskChosen])
 
+    // creating or updating of Task
   const formHandler = ( event: React.FormEvent ) => {
       event.preventDefault()
 
@@ -42,10 +44,12 @@ const AddEditTaskForm = ({setOpened, taskList, setTasks, taskChosen, setChosenIt
               status: "To Do",
               progress: 0
           }
+
+          // logic of updating or creating
           if ( taskChosen === null ) {
               setTasks([newTask, ...taskList])
           } else {
-              const newArr = taskList.map( task => {
+              const newTaskList = taskList.map( task => {
                   if ( task.id === taskChosen ) {
                       console.log({...task, title: taskTitle})
                       return {...task, title: taskTitle, priority: taskPriority}
@@ -54,7 +58,7 @@ const AddEditTaskForm = ({setOpened, taskList, setTasks, taskChosen, setChosenIt
                       return task
                   }
               })
-              setTasks(newArr)
+              setTasks(newTaskList)
               setChosenItem(null)
           }
           setOpened(false)
