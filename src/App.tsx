@@ -1,31 +1,94 @@
 import "./App.scss";
-import { ReactComponent as Add } from "./assets/icons/add.svg";
+import {ReactComponent as Add} from "./assets/icons/add.svg";
 import AddEditTaskForm from "./components/AddEditTaskForm";
 import Button from "./components/Button";
 import DeleteModal from "./components/DeleteModal";
 import TaskCard from "./components/TaskCard";
-import { taskList } from "./data/taskList";
+import {useEffect, useState} from "react";
+import {Simulate} from "react-dom/test-utils";
+import progress = Simulate.progress;
 
+
+export interface Task {
+    id: number,
+    title: string,
+    priority: string,
+    status: string,
+    progress: number
+}
 const App = () => {
-  const showAddEditModal = false;
-  const showDeleteModal = false;
-  return (
-    <div className="container">
-      <div className="page-wrapper">
-        <div className="top-title">
-          <h2>Task List</h2>
-          <Button title="Add Task" icon={<Add />} onClick={() => {}} />
+    const [taskList, setTasks] = useState<Task[]>([])
+    const [showAddEditModal, setAddEditModal] = useState<boolean>(false)
+    const [showDeleteModal, setDeleteModal] = useState<boolean>(false)
+    const [ taskChosen, setChosen ] = useState<number | null>(null)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/taskList');
+                const data: Task[] = await response.json();
+                setTasks(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData()
+    }, [])
+
+
+    const deleteHandler = (id: number) => {
+        const newTasks: Task[] = taskList.filter( (task: Task) => task.id !== id)
+        setTasks(newTasks)
+    }
+
+    const onProgressHandler = (id: number) => {
+        const newTasks: Task[] = taskList.map( (task: Task) => {
+            if ( task.id === id ) {
+                return {...task, progress: task.progress === 100 ? 0 : task.progress + 50}
+            } else {
+                return task
+            }
+        })
+        setTasks(newTasks)
+    }
+
+    return (
+        <div className="container">
+            <div className="page-wrapper">
+                <div className="top-title">
+                    <h2>Task List</h2>
+                    <Button title="Add Task" icon={<Add/>} onClick={() => {
+                        setAddEditModal(true)
+                    }}/>
+                </div>
+                <div className="task-container">
+                    {taskList.map((task) => (
+                        <TaskCard task={task} key={task.id}
+                                  isOpenedDelete={showDeleteModal}
+                                  setOpenedDeleteModal={setDeleteModal}
+                                  deleteHandler={deleteHandler}
+                                  setItemDelete={setChosen}
+                                  setAddEditModal={setAddEditModal}
+                                  onProgressHandler={onProgressHandler}
+                        />
+                    ))}
+                </div>
+            </div>
+            {showAddEditModal && <AddEditTaskForm setOpened={setAddEditModal}
+                                                  taskList={taskList}
+                                                  setTasks={setTasks}
+                                                  taskChosen={taskChosen}
+                                                  setChosenItem={setChosen}
+            />}
+            {showDeleteModal && <DeleteModal
+                                             setOpened={setDeleteModal}
+                                             itemToDelete={taskChosen}
+                                             deleteHandler={deleteHandler}
+                                             setChosenItem={setChosen}
+            />}
         </div>
-        <div className="task-container">
-          {taskList.map((task) => (
-            <TaskCard task={task} />
-          ))}
-        </div>
-      </div>
-      {showAddEditModal && <AddEditTaskForm />}
-      {showDeleteModal && <DeleteModal />}
-    </div>
-  );
+    );
 };
 
 export default App;
