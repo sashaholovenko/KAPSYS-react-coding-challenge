@@ -7,15 +7,10 @@ import TaskCard from "./components/TaskCard";
 import {useEffect, useState} from "react";
 import {Simulate} from "react-dom/test-utils";
 import progress = Simulate.progress;
+import {Task} from "./types/Task";
 
 
-export interface Task {
-    id: number,
-    title: string,
-    priority: string,
-    status: string,
-    progress: number
-}
+
 const App = () => {
     const [taskList, setTasks] = useState<Task[]>([])
     const [showAddEditModal, setAddEditModal] = useState<boolean>(false)

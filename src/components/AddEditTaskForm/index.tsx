@@ -6,7 +6,7 @@ import Modal from "../Modal"
 import "./style.scss"
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import { v4 as uuidv4 } from 'uuid';
-import {Task} from "../../App";
+import {Task} from "../../types/Task";
 
 interface AddEditTaskFormProps {
   setOpened: Dispatch<SetStateAction<boolean>>
@@ -49,12 +49,11 @@ const AddEditTaskForm = ({setOpened, taskList, setTasks, taskChosen, setChosenIt
           if ( taskChosen === null ) {
               setTasks([newTask, ...taskList])
           } else {
-              const newTaskList = taskList.map( task => {
+              const newTaskList: Task[] = taskList.map( task => {
                   if ( task.id === taskChosen ) {
                       console.log({...task, title: taskTitle})
                       return {...task, title: taskTitle, priority: taskPriority}
                   } else {
-
                       return task
                   }
               })

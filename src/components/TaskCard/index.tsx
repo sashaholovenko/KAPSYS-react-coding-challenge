@@ -4,14 +4,15 @@ import { ReactComponent as EditIcon } from "../../assets/icons/edit.svg"
 import CircularProgressBar from "../CircularProgressBar"
 import "./style.scss"
 import {Dispatch, SetStateAction} from "react";
-import {Task} from "../../App";
+import {Task} from "../../types/Task";
 
 
-interface TaskCard {
+interface TaskCardProps {
+    task: Task
     setOpenedDeleteModal: Dispatch<SetStateAction<boolean>>
     isOpenedDelete: boolean
-    deleteHandler: () => void
-    setChosenTask: Dispatch<SetStateAction<number>>
+    deleteHandler: (id: number) => void
+    setChosenTask: Dispatch<SetStateAction<number | null>>
     setAddEditModal: Dispatch<SetStateAction<boolean>>
     onProgressHandler: (id: number) => void
 }
@@ -22,7 +23,7 @@ const progressList: { [key: number]: string } = {
     100: "Done",
 };
 
-const TaskCard = ({ task, setOpenedDeleteModal , setChosenTask, setAddEditModal, onProgressHandler }: any) => {
+const TaskCard = ({ task, setOpenedDeleteModal , setChosenTask, setAddEditModal, onProgressHandler }: TaskCardProps) => {
   const { id, title, priority, status, progress }: Task = task
 
     // show modal & set task id to delete
